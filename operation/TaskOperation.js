@@ -1,4 +1,3 @@
-const connectDb=require('../config/db');
 class TaskOperation{
 
     constructor(){
@@ -43,3 +42,5 @@ class TaskOperation{
 
     }
 }
+
+module.exports=TaskOperation;
