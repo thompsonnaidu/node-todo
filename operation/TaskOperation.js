@@ -34,12 +34,20 @@ class TaskOperation{
 
     // edit task
     updateTask(task){
-
+        /**
+         * check if the task id exists
+         * update the task
+         * return the updated data
+         */
     }
 
     // delete task
     removeTask(id){
-
+        /***
+         * check if the data exists using the id 
+         * check if it belong to the same user who has request it
+         * check if the user is user
+         */
     }
 }
 

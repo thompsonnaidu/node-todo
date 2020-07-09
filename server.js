@@ -1,6 +1,5 @@
 const express=require("express");
 const app=express();
-
 const PORT= process.env.PORT || 3000;
 const connectDb=require('./config/db');
 
@@ -12,8 +11,6 @@ app.use(express.json({extended:false}))
 
 // define routes
 app.use('/api/task',require('./routes/task'));
-
-// localhost:300/api/task/list/1
 
 app.listen(PORT,(error)=>{
     if(error){
