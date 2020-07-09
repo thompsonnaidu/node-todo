@@ -1,5 +1,4 @@
 const UserModel=require('../model/Users');
-const connectDb=require('../config/db');
 
 class UserOperation{
 
@@ -49,23 +48,10 @@ class UserOperation{
                 throw new Error("Username or password invalid")
             }
     }
-
+    
 
 
 
 }
 
-
-// (async ()=>{
-//     let Operation=new UserOperation();
-//     let data= await Operation.checkLogin("thompson@gmail.com","password")
-//     console.log(data)
-// })();
-(async ()=>{
-    await connectDb();
-    let Operation=new UserOperation();
-    // let data= await Operation.registerUser({});
-    let data= await Operation.checkLogin("thompson@gmail.com","password")
-    console.log(data)
-})()
 module.exports=UserOperation;
