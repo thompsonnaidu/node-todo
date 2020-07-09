@@ -7,6 +7,9 @@ const connectDb=require('./config/db');
 // create connection request globally
 connectDb()
 
+// initialize middleware
+app.use(express.json({extended:false}))
+
 // define routes
 app.use('/api/task',require('./routes/task'));
 

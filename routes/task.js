@@ -23,5 +23,25 @@ router.get('/list/:page',async (req,res)=>{
     }    
 })
 
+// @route post api/task/
+// @desc insert record to the database
+router.post('/',async (req,res)=>{
+    try {
+        let operation =new TaskOperation();
+
+        const {title,status}=req.body;
+        let insertedTask= await operation.insertTask(title,status);
+        res.status(200).json({
+                success:true,
+                task:insertedTask        
+        });
+    } catch (error) {
+        res.status(500).json({
+            "success":false,
+            "error":error
+        })
+    }
+})
+
 
 module.exports=router;
