@@ -43,15 +43,3 @@ class TaskOperation{
 
     }
 }
-
-(async ()=>{
-    await connectDb();
-    let operation=new TaskOperation();
-    // let data = await operation.insertTask("this is been inserted using node js ","inprogress");
-    // data = await operation.insertTask("we are performing get oepration for task ","inprogress");
-    // data = await operation.insertTask("expose this as a real api ","not_started");
-    let data = await operation.getPaginationTaskList(1,2);
-    console.log(data);
-    data = await operation.getPaginationTaskList(2,2);
-    console.log(data);
-})();
