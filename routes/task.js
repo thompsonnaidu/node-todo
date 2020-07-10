@@ -10,8 +10,8 @@ router.get('/list/:page',[param('page').isNumeric().withMessage("should be a num
     try{
 
         const {page}=req.params;    
-        const validationError= await validationResult(req);
-        if (validationError.errors.length > 0)
+        const validationError= validationResult(req);
+        if (!validationError.isEmpty())
         {
             return res.status(400).json({"success":false,"error":validationError.errors})
         }
@@ -38,8 +38,8 @@ router.post('/',[
 ],async (req,res)=>{
     try {
         // validate the request
-        let validationError= await validationResult(req);
-        if(validationError){
+        let validationError= validationResult(req);
+        if(!validationError.isEmpty()){
             res.status(400).json({
                 "success":false,
                 "message":validationError.errors
