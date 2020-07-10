@@ -63,5 +63,72 @@ router.post('/',[
     }
 })
 
+// @route delete api/task/:id
+// @desc delete record to the database
+router.delete('/:id',[param('id').isMongoId().withMessage("Please pass a valid ID")],async (req,res)=>{
+
+    try{
+
+        const {id}=req.params;    
+        const validationError= validationResult(req);
+        if (!validationError.isEmpty())
+        {
+            return res.status(400).json({"success":false,"error":validationError.errors})
+        }
+        let operation =new TaskOperation();
+        let result= await operation.removeTask(id);
+        if(!result.isdeleted){
+            return res.status(400).json({"success":false,error:result.error})
+        }
+        res.status(200).json({
+                success:true,
+                id:result.id          
+        });
+    }catch(error){
+            res.status(500).json({
+                "success":false,
+                "error":error.message
+            })
+    }    
+})
+
+// @route put api/task/:id
+// @desc update record to the database
+router.put('/:id',[param('id').isMongoId().withMessage("Please pass a valid ID")],async (req,res)=>{
+
+    try{
+        // validate the request
+        const {id}=req.params;    
+        const validationError= validationResult(req);
+        if (!validationError.isEmpty())
+        {
+            return res.status(400).json({"success":false,"error":validationError.errors})
+        }
+
+        // build our task object
+        const {title,status}=req.body;
+        const updatedTask={id:id}
+        
+        if (title) updatedTask.title=title;
+        // check if the status has one of either value ('not_started,complete,inprogress')
+        if (status) updatedTask.status=status;
+        
+        let operation =new TaskOperation();
+        let result= await operation.updateTask(updatedTask);
+        // build result based on result
+        if(!result.isUpdated){
+            return res.status(400).json({"success":false,error:result.error})
+        }
+        res.status(200).json({
+                success:true,
+                task:result.data          
+        });
+    }catch(error){
+            res.status(500).json({
+                "success":false,
+                "error":error.message
+            })
+    }    
+})
 
 module.exports=router;

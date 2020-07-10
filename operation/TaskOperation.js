@@ -1,3 +1,5 @@
+const connectDb=require('./../config/db');
+
 class TaskOperation{
 
     constructor(){
@@ -33,21 +35,48 @@ class TaskOperation{
     }
 
     // edit task
-    updateTask(task){
+    async updateTask(task){
         /**
          * check if the task id exists
          * update the task
          * return the updated data
          */
+        try {
+            const taskDB= await this.TaskModel.findById(task.id);
+            if(!taskDB){
+                 console.log("Record not present");
+                 return {"isUpdated":false,"error":"Record not present"}
+            }
+            const data=await this.TaskModel.findByIdAndUpdate(task.id,{$set:task},{ new:true});
+             return {"isUpdated":true,"data":data};
+ 
+          } catch (error) {
+              console.log("error while Updating an document ",error);
+              throw new Error("Error while updating the data")
+          }
     }
 
     // delete task
-    removeTask(id){
+    async removeTask(id){
         /***
          * check if the data exists using the id 
          * check if it belong to the same user who has request it
-         * check if the user is user
+         * delete the data
          */
+         try {
+           const task= await this.TaskModel.findById(id);
+           if(!task){
+                console.log("Record not present");
+                return {"isdeleted":false,"error":"Record not present"}
+           }
+           const data=await this.TaskModel.findByIdAndRemove(id);
+           console.log(data,id);
+            return {"isdeleted":true,"id":id};
+
+         } catch (error) {
+             console.log("error while deleting an document ",error);
+             throw new Error("Error while deleting the data")
+         }
     }
 }
 
