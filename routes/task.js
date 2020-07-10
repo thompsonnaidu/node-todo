@@ -94,7 +94,10 @@ router.delete('/:id',[param('id').isMongoId().withMessage("Please pass a valid I
 
 // @route put api/task/:id
 // @desc update record to the database
-router.put('/:id',[param('id').isMongoId().withMessage("Please pass a valid ID")],async (req,res)=>{
+router.put('/:id',[param('id').isMongoId().withMessage("Please pass a valid ID"),
+    check('status').optional().isIn(['inprogress','complete','not_started'])
+                   .withMessage("status should be either one of inprogress,complete,not_started")
+],async (req,res)=>{
 
     try{
         // validate the request
