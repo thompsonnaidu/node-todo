@@ -11,6 +11,7 @@ app.use(express.json({extended:false}))
 
 // define routes
 app.use('/api/task',require('./routes/task'));
+app.use('/api/user',require('./routes/user'));
 
 app.listen(PORT,(error)=>{
     if(error){
