@@ -2,6 +2,7 @@ const express=require("express");
 const router=express.Router();
 const UserOperation=require('./../operation/UserOperation');
 const { check, validationResult ,param} = require('express-validator');
+const config=require('../config/config');
 const jwt=require("jsonwebtoken");
 
 // @route post api/user/register
@@ -69,7 +70,7 @@ router.post('/login',[
             user_id:verifiedUser.data.id
         }
         // generate the token with the payload
-        jwt.sign(payload,'thisisyoursecurekey',{expiresIn:36000},(error,token)=>{
+        jwt.sign(payload,config.jsonwebtokenPassword,{expiresIn:36000},(error,token)=>{
             if(error) throw error
             res.status(200).json({
                 success:true,

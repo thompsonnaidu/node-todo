@@ -2,10 +2,12 @@ const express=require("express");
 const router=express.Router();
 const TaskOperation=require('./../operation/TaskOperation');
 const { check, validationResult ,param} = require('express-validator');
+const auth=require("../middleware/auth");
 
 // @route get api/task/list
 // @desc get the list of task
-router.get('/list/:page',[param('page').isNumeric().withMessage("should be a number")],async (req,res)=>{
+// Private route
+router.get('/list/:page',auth,[param('page').isNumeric().withMessage("should be a number")],async (req,res)=>{
 
     try{
 
@@ -31,7 +33,8 @@ router.get('/list/:page',[param('page').isNumeric().withMessage("should be a num
 
 // @route post api/task/
 // @desc insert record to the database
-router.post('/',[
+// Private route
+router.post('/',auth,[
     check('status').isIn(['inprogress','complete','not_started'])
                    .withMessage("status should be either one of inprogress,complete,not_started"),
     check('title').not().isEmpty().withMessage("Please pass the title")
@@ -65,7 +68,7 @@ router.post('/',[
 
 // @route delete api/task/:id
 // @desc delete record to the database
-router.delete('/:id',[param('id').isMongoId().withMessage("Please pass a valid ID")],async (req,res)=>{
+router.delete('/:id',auth,[param('id').isMongoId().withMessage("Please pass a valid ID")],async (req,res)=>{
 
     try{
 
@@ -94,7 +97,7 @@ router.delete('/:id',[param('id').isMongoId().withMessage("Please pass a valid I
 
 // @route put api/task/:id
 // @desc update record to the database
-router.put('/:id',[param('id').isMongoId().withMessage("Please pass a valid ID"),
+router.put('/:id',auth,[param('id').isMongoId().withMessage("Please pass a valid ID"),
     check('status').optional().isIn(['inprogress','complete','not_started'])
                    .withMessage("status should be either one of inprogress,complete,not_started"),
     check('title').optional().not().isEmpty().withMessage("Please pass the title")
