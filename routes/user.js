@@ -2,6 +2,7 @@ const express=require("express");
 const router=express.Router();
 const UserOperation=require('./../operation/UserOperation');
 const { check, validationResult ,param} = require('express-validator');
+const jwt=require("jsonwebtoken");
 
 // @route post api/user/register
 // @desc insert record to the database
@@ -63,10 +64,19 @@ router.post('/login',[
            return res.status(400).json({success:false,error:verifiedUser.error});
         }
 
-        res.status(200).json({
+        //define our jwt token
+        let payload={
+            user_id:verifiedUser.data.id
+        }
+        // generate the token with the payload
+        jwt.sign(payload,'thisisyoursecurekey',{expiresIn:36000},(error,token)=>{
+            if(error) throw error
+            res.status(200).json({
                 success:true,
-                user:verifiedUser.data.id        
-        });
+                token:token       
+            });
+        })
+        
     } catch (error) {
         res.status(500).json({
             "success":false,
