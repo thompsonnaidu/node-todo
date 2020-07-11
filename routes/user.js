@@ -1,5 +1,3 @@
-// api/user/register -->{"success":true,data:{name:name,email:email}}
-// api/user/login ---> {"success":true},{"success":false,"error":"i"}
 const express=require("express");
 const router=express.Router();
 const UserOperation=require('./../operation/UserOperation');
@@ -18,7 +16,7 @@ router.post('/register',[
         if(!validationError.isEmpty()){
             res.status(400).json({
                 "success":false,
-                "message":validationError.errors
+                "message":validationError
             });
             return
         }
@@ -32,7 +30,7 @@ router.post('/register',[
                 user:insertedTask        
         });
     } catch (error) {
-        console.log(typeof error,error.message);
+        console.log(typeof error,error);
         res.status(500).json({
             "success":false,
             "error":error.message

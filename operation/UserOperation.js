@@ -1,6 +1,7 @@
 const UserModel=require('../model/Users');
 const jwt=require('jsonwebtoken')
 const bcrypt=require('bcryptjs');
+const {already_reg_user}= require('../config/message');
 class UserOperation{
 
     constructor(){
@@ -14,16 +15,16 @@ class UserOperation{
                 let anyUser= await UserModel.findOne({email:user.email});
                 if(anyUser){
                     //email already resgister
-                    console.log(anyUser);
-                    throw new Error("THe mention email is already registered") 
+                    throw new Error(already_reg_user) 
                 }else{
                     let newUser= new UserModel({
                         email:user.email,
                         password:user.password,
                         name:user.name
                     });
-                    // const salt=await bcrypt.genSalt(10);
-                    // newUser.password=await bcrypt.hash(user.password,salt)
+                    // hashing the password
+                    const salt=await bcrypt.genSalt(10);
+                    newUser.password=await bcrypt.hash(user.password,salt)
                     await newUser.save();
                     return {name:user.name,email:user.email};
                 }
@@ -38,12 +39,20 @@ class UserOperation{
             // check fetch user with email and password
             // return success(200)else return error (401);
             try {
-                   let user= await UserModel.findOne({email:email, password:password});
+                // if the user the email is present
+                // then will check the password
+                   let user= await UserModel.findOne({email:email});
                    if(!user){
-                        return {isVerified:false,error:"invalid credentials"};
-                   }else{
+                        return {isVerified:false,error:"Username not present"};
+                   }
+                //checking the password 
+                   const isMatch= await bcrypt.compare(password,user.password);
+                   if(isMatch){
+                        
                        return {isVerified:true,data:user};
                    }
+                   return {isVerified:false,error:"invalid credentials"};
+            
             } catch (error) {
                 throw new Error("Username or password invalid")
             }
