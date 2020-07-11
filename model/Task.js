@@ -1,6 +1,10 @@
 const mongoose=require('mongoose');
 // define the collection struc
 const TaskSchema= mongoose.Schema({
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'users'
+    },
     title:{
         type:String,
         required:true

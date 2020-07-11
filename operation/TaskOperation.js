@@ -7,11 +7,11 @@ class TaskOperation{
     }
 
     // get task
-    async getPaginationTaskList(current_page,limit=10){
+    async getPaginationTaskList(current_page,limit=10,current_user){
 
         try{            
             let skip_count=(current_page - 1 )*limit ;
-            const taskList= await this.TaskModel.find().skip(skip_count).limit(limit);
+            const taskList= await this.TaskModel.find({user:current_user}).skip(skip_count).limit(limit);
             return taskList;
         }catch(error){
             console.log("There was an error while fetching task ",error);
@@ -20,11 +20,12 @@ class TaskOperation{
     }
     
     // add task
-    async insertTask(title,status){
+    async insertTask(title,status,current_user){
         try{
             const taskDB= await  new this.TaskModel({
                 title:title,
-                status:status
+                status:status,
+                user:current_user
             });
 
            return await taskDB.save();
@@ -35,7 +36,7 @@ class TaskOperation{
     }
 
     // edit task
-    async updateTask(task){
+    async updateTask(task,current_user){
         /**
          * check if the task id exists
          * update the task
@@ -57,7 +58,7 @@ class TaskOperation{
     }
 
     // delete task
-    async removeTask(id){
+    async removeTask(id,current_user){
         /***
          * check if the data exists using the id 
          * check if it belong to the same user who has request it
@@ -68,6 +69,10 @@ class TaskOperation{
            if(!task){
                 console.log("Record not present");
                 return {"isdeleted":false,"error":"Record not present"}
+           }
+           if(task.user.toString() !== current_user){
+                // this task does not belong to the authenticated user 
+                return {"isdeleted":false,"error":"You are not allowed to delete this task"}
            }
            const data=await this.TaskModel.findByIdAndRemove(id);
            console.log(data,id);

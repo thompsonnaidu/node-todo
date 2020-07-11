@@ -18,7 +18,7 @@ router.get('/list/:page',auth,[param('page').isNumeric().withMessage("should be 
             return res.status(400).json({"success":false,"error":validationError.errors})
         }
         let operation =new TaskOperation();
-        let taskList= await operation.getPaginationTaskList(page,10);
+        let taskList= await operation.getPaginationTaskList(page,10,req.user_id);
         res.status(200).json({
                 success:true,
                 task:taskList          
@@ -52,7 +52,7 @@ router.post('/',auth,[
         let operation =new TaskOperation();
         const {title,status}=req.body;
         // insert the record
-        let insertedTask= await operation.insertTask(title,status);
+        let insertedTask= await operation.insertTask(title,status,req.user_id);
         res.status(200).json({
                 success:true,
                 task:insertedTask        
@@ -79,7 +79,7 @@ router.delete('/:id',auth,[param('id').isMongoId().withMessage("Please pass a va
             return res.status(400).json({"success":false,"error":validationError.errors})
         }
         let operation =new TaskOperation();
-        let result= await operation.removeTask(id);
+        let result= await operation.removeTask(id,req.user_id);
         if(!result.isdeleted){
             return res.status(400).json({"success":false,error:result.error})
         }
