@@ -121,7 +121,7 @@ router.put('/:id',auth,[param('id').isMongoId().withMessage("Please pass a valid
         if (status) updatedTask.status=status;
         
         let operation =new TaskOperation();
-        let result= await operation.updateTask(updatedTask);
+        let result= await operation.updateTask(updatedTask,req.user_id);
         // build result based on result
         if(!result.isUpdated){
             return res.status(400).json({"success":false,error:result.error})

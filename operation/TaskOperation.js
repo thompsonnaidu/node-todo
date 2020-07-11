@@ -11,7 +11,9 @@ class TaskOperation{
 
         try{            
             let skip_count=(current_page - 1 )*limit ;
-            const taskList= await this.TaskModel.find({user:current_user}).skip(skip_count).limit(limit);
+            const taskList= await this.TaskModel.find({user:current_user})
+                                                .skip(skip_count)
+                                                .limit(limit);
             return taskList;
         }catch(error){
             console.log("There was an error while fetching task ",error);
@@ -47,6 +49,12 @@ class TaskOperation{
             if(!taskDB){
                  console.log("Record not present");
                  return {"isUpdated":false,"error":"Record not present"}
+            }
+            // check if the user is a validated user
+            if(taskDB.user.toString() !== current_user){
+                // the task doesnot belong to the  authenticate user
+                console.log(current_user);
+                return {"isUpdated":false,"error":"Not a valid user to perform operation"}
             }
             const data=await this.TaskModel.findByIdAndUpdate(task.id,{$set:task},{ new:true});
              return {"isUpdated":true,"data":data};
